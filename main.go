@@ -4,7 +4,6 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
-	"io/fs"
 	"log"
 	"net/http"
 	"strconv"
@@ -29,13 +28,47 @@ var (
 )
 
 func main() {
+	locations = append(locations, Location{
+    Lat: 49.823,
+    Lon: 19.023489,
+    Timestamp: strconv.FormatInt(1758214617380, 10),
+    HDOP: 9.935000,
+    Altitude: 395.400020,
+    Speed: 0.000000,
+  })
+
+  locations = append(locations, Location{
+    Lat: 49.824,
+    Lon: 19.026,
+    Timestamp: strconv.FormatInt(1758214622380, 10),
+    HDOP: 9.935000,
+    Altitude: 395.400020,
+    Speed: 0.000000,
+  })
+
+  locations = append(locations, Location{
+    Lat: 49.825,
+    Lon: 19.023489,
+    Timestamp: strconv.FormatInt(1758214627380, 10),
+    HDOP: 9.935000,
+    Altitude: 395.400020,
+    Speed: 0.000000,
+  })
+
+  locations = append(locations, Location{
+    Lat: 49.826,
+    Lon: 19.0232,
+    Timestamp: strconv.FormatInt(1758214627380, 10),
+    HDOP: 9.935000,
+    Altitude: 395.400020,
+    Speed: 0.000000,
+  })
+
 	http.HandleFunc("/api/loc/report", locHandler)
 	http.HandleFunc("/api/loc/all", getAllHandler)
 
 	// serve static files from "static" folder (map page)
-  staticFS, _ := fs.Sub(content, "static")
-	fs := http.FileServer(http.FS(staticFS))
-	http.Handle("/", fs)
+  http.Handle("/", http.FileServer(http.Dir("static")))
 
 	fmt.Println("Server listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -59,7 +92,7 @@ func locHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Location received: lat=%f, lon=%f, timestamp=%s, hdop=%f, altitude=%f, speed=%f",	lat, lon, timestamp, hdop, altitude, speed)
+	log.Printf("Location received: lat=%f, lon=%f, timestamp=%s, hdop=%f, altitude=%f, speed=%f", lat, lon, timestamp, hdop, altitude, speed)
 
 	loc := Location{Lat: lat, Lon: lon, Timestamp: timestamp, HDOP: hdop, Altitude: altitude, Speed: speed}
 
@@ -78,4 +111,3 @@ func getAllHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(locations)
 }
-
