@@ -1,7 +1,6 @@
 package main
 
 import (
-	"embed"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -10,12 +9,9 @@ import (
 	"sync"
 )
 
-//go:embed static/*
-var content embed.FS
-
 type Location struct {
 	Lat       float64 `json:"lat"`
-	Lon       float64 `json:"lon"`
+	Lng       float64 `json:"lng"`
 	Timestamp string  `json:"timestamp"`
 	HDOP      float64 `json:"hdop"`
 	Altitude  float64 `json:"altitude"`
@@ -30,7 +26,7 @@ var (
 func main() {
 	locations = append(locations, Location{
     Lat: 49.823,
-    Lon: 19.023489,
+    Lng: 19.023489,
     Timestamp: strconv.FormatInt(1758214617380, 10),
     HDOP: 9.935000,
     Altitude: 395.400020,
@@ -39,7 +35,7 @@ func main() {
 
   locations = append(locations, Location{
     Lat: 49.824,
-    Lon: 19.026,
+    Lng: 19.026,
     Timestamp: strconv.FormatInt(1758214622380, 10),
     HDOP: 9.935000,
     Altitude: 395.400020,
@@ -48,7 +44,7 @@ func main() {
 
   locations = append(locations, Location{
     Lat: 49.825,
-    Lon: 19.023489,
+    Lng: 19.023489,
     Timestamp: strconv.FormatInt(1758214627380, 10),
     HDOP: 9.935000,
     Altitude: 395.400020,
@@ -57,7 +53,7 @@ func main() {
 
   locations = append(locations, Location{
     Lat: 49.826,
-    Lon: 19.0232,
+    Lng: 19.0232,
     Timestamp: strconv.FormatInt(1758214627380, 10),
     HDOP: 9.935000,
     Altitude: 395.400020,
@@ -94,7 +90,7 @@ func locHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Location received: lat=%f, lon=%f, timestamp=%s, hdop=%f, altitude=%f, speed=%f", lat, lon, timestamp, hdop, altitude, speed)
 
-	loc := Location{Lat: lat, Lon: lon, Timestamp: timestamp, HDOP: hdop, Altitude: altitude, Speed: speed}
+	loc := Location{Lat: lat, Lng: lon, Timestamp: timestamp, HDOP: hdop, Altitude: altitude, Speed: speed}
 
 	mu.Lock()
 	locations = append(locations, loc)
